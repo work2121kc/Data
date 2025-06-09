@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الدرجات - تسجيل الدخول</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-form">
+            <h1>تسجيل الدخول</h1>
+            <div id="error-message" class="error-message"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">اسم المستخدم:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة المرور:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-type">نوع المستخدم:</label>
+                    <select id="user-type" name="userType" required>
+                        <option value="student">طالب</option>
+                        <option value="معلم">معلم</option>
+                        <option value="admin">إداري</option>
+                    </select>
+                </div>
+                <button type="submit" class="login-btn">تسجيل الدخول</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
