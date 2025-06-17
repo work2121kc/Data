@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل دخول الطالب - نظام إدارة حلقات التحفيظ</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      direction: rtl;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    .login-container {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 400px;
+      transition: all 0.3s ease;
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .login-header h1 {
+      color: #3f51b5;
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    
+    .login-header p {
+      color: #666;
+      margin-top: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    
+    .form-group input:focus, .form-group select:focus {
+      border-color: #3f51b5;
+      box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+      outline: none;
+    }
+    
+    .login-btn {
+      background-color: #3f51b5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 14px;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    .login-btn:hover {
+      background-color: #303f9f;
+      transform: translateY(-2px);
+    }
+    
+    .login-btn:active {
+      transform: translateY(0);
+    }
+    
+    .error-message {
+      color: #f44336;
+      text-align: center;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: rgba(244, 67, 54, 0.1);
+      border-radius: 4px;
+      display: none;
+    }
+    
+    /* Dark mode styles */
+    body.dark-mode {
+      background-image: linear-gradient(135deg, #1f1f1f 0%, #2c3e50 100%);
+    }
+    
+    body.dark-mode .login-container {
+      background-color: #2d2d2d;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    body.dark-mode .login-header h1 {
+      color: #5c6bc0;
+    }
+    
+    body.dark-mode .login-header p {
+      color: #aaa;
+    }
+    
+    body.dark-mode .form-group label {
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .form-group input, body.dark-mode .form-group select {
+      background-color: #3d3d3d;
+      border: 1px solid #555;
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .form-group input:focus, body.dark-mode .form-group select:focus {
+      border-color: #5c6bc0;
+      box-shadow: 0 0 0 2px rgba(92, 107, 192, 0.2);
+    }
+    
+    body.dark-mode .login-btn {
+      background-color: #5c6bc0;
+    }
+    
+    body.dark-mode .login-btn:hover {
+      background-color: #3f51b5;
+    }
+    
+    body.dark-mode .error-message {
+      background-color: rgba(244, 67, 54, 0.2);
+    }
+    
+    .dark-mode-toggle {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 14px;
+      background-color: #607d8b;
+      color: white;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    
+    .dark-mode-toggle:hover {
+      background-color: #455a64;
+      transform: translateY(-2px);
+    }
+    
+    .dark-mode-toggle:before {
+      content: '🌙';
+      margin-left: 5px;
+    }
+    
+    body.dark-mode .dark-mode-toggle:before {
+      content: '☀️';
+    }
+    
+    /* إضافة انميشن التحميل */
+    .loader-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 5px solid #3f51b5;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+    
+    body.dark-mode .loader {
+      border: 5px solid #333;
+      border-top: 5px solid #5c6bc0;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <button id="darkModeToggle" class="dark-mode-toggle">تبديل الوضع</button>
+  
+  <!-- إضافة عنصر انميشن التحميل -->
+  <div class="loader-container" id="loaderContainer">
+    <div class="loader"></div>
+  </div>
+  
+  <div class="login-container fade-in">
+    <div class="login-header">
+      <h1>تسجيل دخول الطالب</h1>
+      <p>نظام إدارة حلقات التحفيظ</p>
+    </div>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="halaqaSelect">اختر الحلقة:</label>
+        <select id="halaqaSelect" required>
+          <option value="" disabled selected>-- اختر الحلقة --</option>
+          <option value="1Ke8W4HpUf1wRKvWaDe46QLZZwsHaQ-q-cG3SbBn5FEI" data-summary="15UuXrC10DlAziJBMlfCbH2AP21IPDUDCboQD8WFNBwU">الذكر الحكيم</option>
+          <option value="2Dn7Yd-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux" data-summary="2Dn7Yd-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux">الفاروق</option>
+          <option value="3Dn7Yd-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux" data-summary="3Dn7Yd-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux">خالد بن الوليد</option>
+          <option value="4Dn7Yd-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux" data-summary="4Dn7Yd-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux-Yd_Ux">رياض الصالحين</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="studentId">معرف الطالب:</label>
+        <input type="text" id="studentId" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">كلمة المرور:</label>
+        <input type="password" id="password" required>
+      </div>
+      
+      <button type="submit" class="login-btn">تسجيل الدخول</button>
+    </form>
+    
+    <div id="errorMessage" class="error-message"></div>
+  </div>
+  
+  <script>
+    // تعريف عنوان API (يجب تغييره إلى عنوان نشر تطبيق Google Apps Script الخاص بك)
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx0SXeWvxFTVLIVDkxPkTPbUcwBK6Yew64XBZMLqKaEVAnyU_o41aO4gkZpd3zix4npLw/exec';
+    
+    // إضافة مستمع حدث لنموذج تسجيل الدخول
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const halaqaSelect = document.getElementById('halaqaSelect');
+      const selectedOption = halaqaSelect.options[halaqaSelect.selectedIndex];
+      const weeksSheetId = halaqaSelect.value; // معرف ورقة الأسابيع
+      const summarySheetId = selectedOption.getAttribute('data-summary'); // معرف ورقة الخلاصة
+      const studentId = document.getElementById('studentId').value;
+      const password = document.getElementById('password').value;
+      
+      // إظهار انميشن التحميل
+      const loaderContainer = document.getElementById('loaderContainer');
+      loaderContainer.style.display = 'flex';
+      
+      // التحقق من صحة بيانات تسجيل الدخول
+      fetch(`${API_URL}?action=verifyStudentLogin&sheetId=${encodeURIComponent(weeksSheetId)}&studentId=${encodeURIComponent(studentId)}&password=${encodeURIComponent(password)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // تخزين بيانات الطالب في التخزين المحلي
+            localStorage.setItem('studentData', JSON.stringify({
+              weeksSheetId: weeksSheetId,
+              summarySheetId: summarySheetId,
+              studentId: studentId,
+              studentName: data.studentName,
+              halaqaName: selectedOption.text
+            }));
+            
+            // الانتقال إلى صفحة الطالب
+            window.location.href = 'Student-Dashboard.html';
+          } else {
+            // إخفاء انميشن التحميل
+            loaderContainer.style.display = 'none';
+            
+            // عرض رسالة الخطأ
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = data.error || 'فشل تسجيل الدخول. يرجى التحقق من البيانات المدخلة.';
+            errorMessage.style.display = 'block';
+          }
+        })
+        .catch(error => {
+          // إخفاء انميشن التحميل
+          loaderContainer.style.display = 'none';
+          
+          console.error('حدث خطأ:', error);
+          const errorMessage = document.getElementById('errorMessage');
+          errorMessage.textContent = 'حدث خطأ أثناء الاتصال بالخادم. يرجى المحاولة مرة أخرى.';
+          errorMessage.style.display = 'block';
+        });
+    });
+    
+    // Dark Mode Toggle Logic
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    // Check for saved dark mode preference on page load
+    const savedMode = localStorage.getItem('darkMode');
+    if (savedMode === 'enabled') {
+      body.classList.add('dark-mode');
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      // Save preference to localStorage
+      if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+      } else {
+        localStorage.setItem('darkMode', 'disabled');
+      }
+    });
+  </script>
+</body>
+</html>
