@@ -448,7 +448,7 @@
     const studentData = JSON.parse(localStorage.getItem('studentData'));
     if (!studentData) {
       // إذا لم تكن هناك بيانات، إعادة التوجيه إلى صفحة تسجيل الدخول
-      window.location.href = 'Student-Login.html';
+      window.location.href = 'Index.html';
     }
     
     // عرض معلومات الطالب
@@ -914,7 +914,7 @@
       // حذف بيانات الطالب من التخزين المحلي
       localStorage.removeItem('studentData');
       // إعادة التوجيه إلى صفحة تسجيل الدخول
-      window.location.href = 'Student-Login.html';
+      window.location.href = 'Index.html';
     });
     
     // Dark Mode Toggle Logic
